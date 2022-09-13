@@ -36,7 +36,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProcessBLockAudioProcessor::
 {
     std::vector <std::unique_ptr<juce::RangedAudioParameter>> params;
 
-    auto pDrive = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { "drive",  1 }, "Drive",  1.0f, 7.0f, 1.0f );
+    auto pDrive = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { "drive",  1 }, "Drive",  0.0f, 1.0f, 0.2f );
     auto pMix   = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { "mix", 1 }, "Mix",  0.0f, 100.0f, 50.0f );
     
     params.push_back(std::move(pDrive));
@@ -49,7 +49,7 @@ void ProcessBLockAudioProcessor::parameterChanged(const juce::String &parameterI
 {
     if (parameterID == "drive")
     {
-        rawDrive = newValue ;
+        rawDrive = newValue * 5.0f + 2.0f;
 //        DBG("Drive is " <<rawDrive);
     }
     
@@ -125,7 +125,7 @@ void ProcessBLockAudioProcessor::changeProgramName (int index, const juce::Strin
 void ProcessBLockAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
 //    rawDrive = juce::Decibels::decibelsToGain(static_cast<float>(*treeState.getRawParameterValue("drive")));
-    rawDrive = *treeState.getRawParameterValue("drive");
+    rawDrive = *treeState.getRawParameterValue("drive") * 5.0f + 2.0f;
     rawMix = *treeState.getRawParameterValue("mix") * 0.01f;
 }
 
@@ -180,7 +180,9 @@ void ProcessBLockAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
             auto* channelData = block.getChannelPointer(channel);
              
             const auto input = channelData[sample];
-            const auto unity = 1.0 - ( rawDrive / 30.0f);
+            
+            // First stab at gain compensation
+            const auto unity = 1.0 - ( rawDrive / 14.0f);
             const auto sat = piDivisor * std::atanf(rawDrive * input) * unity;
 
             const auto mix = input * (1.0f - rawMix) + rawMix * sat;
