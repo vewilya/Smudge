@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-ProcessBLockAudioProcessorEditor::ProcessBLockAudioProcessorEditor (ProcessBLockAudioProcessor& p)
+ProcessBLockAudioProcessorEditor::ProcessBLockAudioProcessorEditor (SmudgeAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
     // BG Image
@@ -28,12 +28,22 @@ ProcessBLockAudioProcessorEditor::ProcessBLockAudioProcessorEditor (ProcessBLock
     getConstrainer()->setFixedAspectRatio(1.0);
     setResizeLimits(250, 250, 750, 750);
     
+    // Combobox
+    addAndMakeVisible(saturationChoice);
+    satChoiceAttach = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.treeState, "saturationChoice", saturationChoice);
+    saturationChoice.setColour(juce::ComboBox::ColourIds::backgroundColourId, juce::Colours::transparentWhite);
+    
+    saturationChoice.setColour(juce::ComboBox::ColourIds::outlineColourId, juce::Colour::fromString ("FF179595"));
+    saturationChoice.setColour(juce::ComboBox::ColourIds::arrowColourId, juce::Colour::fromString ("FF179595"));
+    saturationChoice.setText("Choose Smudge");
+    saturationChoice.setColour(juce::ComboBox::ColourIds::textColourId, juce::Colour::fromString ("FF179595"));
+//    saturationChoice.setColour(juce::ComboBox::ColourIds::focusedOutlineColourId, juce::Colours::transparentWhite);
+//    saturationChoice.setColour(juce::ComboBox::ColourIds::buttonColourId, juce::Colours::transparentWhite);
+    
     // Drive Slider
     addAndMakeVisible(driveSlider);
-//    driveSlider.setRange(0.0, 100.0, 50.0);
     driveSlider.setTextValueSuffix("");
     driveSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxRight, true, 64, 32);
-//    driveSlider.setDoubleClickReturnValue(true, 50.0);
     driveSlider.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colours::transparentWhite);
     driveSliderAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.treeState, "drive", driveSlider);
     
@@ -43,10 +53,8 @@ ProcessBLockAudioProcessorEditor::ProcessBLockAudioProcessorEditor (ProcessBLock
     
     // Mix Slider
     addAndMakeVisible(mixSlider);
-//    mixSlider.setRange(0.0, 100.0, 50.0);
     mixSlider.setTextValueSuffix("%");
     mixSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxRight, true, 64, 32);
-//    mixSlider.setDoubleClickReturnValue(true, 50.0);
     mixSlider.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colours::transparentWhite);
     mixSliderAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.treeState, "mix", mixSlider);
     
@@ -71,12 +79,10 @@ void ProcessBLockAudioProcessorEditor::paint (juce::Graphics& g)
     const juce::String colourString2 ("179595");
     const juce::Colour colour2 (juce::Colour::fromString ("FF" + colourString2));
     
+    
     g.setGradientFill(juce::ColourGradient::vertical(colour2, getHeight() * 0.9f, colour, getHeight() * 0.1f));
     g.fillAll();
 
-//    g.setColour (juce::Colours::white);
-//    g.setFont (15.0f);
-//    g.drawFittedText ("SAT", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void ProcessBLockAudioProcessorEditor::resized()
@@ -87,12 +93,14 @@ void ProcessBLockAudioProcessorEditor::resized()
     
     // Sliders
     auto posX = getWidth() * .25;
-    auto w = getWidth() * .4;
-    auto h = getHeight() * .75;
+    auto w = getWidth();
+    auto h = getHeight();
     
-    driveSlider.setBounds(posX + 70, h, w, 35);
-    driveLabel.setBounds(posX, h, 65, 35);
+    driveSlider.setBounds(posX + 70, h * .75, w * .4f, 35);
+    driveLabel.setBounds(posX, h * .75, 65, 35);
     
-    mixSlider.setBounds(posX + 70, h + 35, w, 35);
-    mixLabel.setBounds(posX, h + 35, 65, 35);
+    mixSlider.setBounds(posX + 70, h * .75 + 35, w * .4f, 35);
+    mixLabel.setBounds(posX, h * .75 + 35, 65, 35);
+    
+    saturationChoice.setBounds(w * .35, 30, w * .3, 30);
 }

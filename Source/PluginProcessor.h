@@ -13,15 +13,15 @@
 //==============================================================================
 /**
 */
-class ProcessBLockAudioProcessor  : public juce::AudioProcessor, juce::AudioProcessorValueTreeState::Listener
+class SmudgeAudioProcessor  : public juce::AudioProcessor, juce::AudioProcessorValueTreeState::Listener
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
                             #endif
 {
 public:
     //==============================================================================
-    ProcessBLockAudioProcessor();
-    ~ProcessBLockAudioProcessor() override;
+    SmudgeAudioProcessor();
+    ~SmudgeAudioProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -59,8 +59,8 @@ public:
 
     juce::AudioProcessorValueTreeState treeState;
     
-   
-    
+    void process(juce::dsp::ProcessContextReplacing<float> context);
+    void updateParameters();
 private:
     float rawDrive = 1.0f;
     float rawMix = 0.5f;
@@ -74,7 +74,8 @@ private:
     //    juce::dsp::Oversampling<float> oversamplingModule;
     
     bool osToggle {false};
-   
+    float softClipper(float samples);
+    float hardClipper(float samples);
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProcessBLockAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SmudgeAudioProcessor)
 };

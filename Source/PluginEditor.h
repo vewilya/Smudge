@@ -17,7 +17,7 @@
 class ProcessBLockAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
-    ProcessBLockAudioProcessorEditor (ProcessBLockAudioProcessor&);
+    ProcessBLockAudioProcessorEditor (SmudgeAudioProcessor&);
     ~ProcessBLockAudioProcessorEditor() override;
 
     //==============================================================================
@@ -26,7 +26,10 @@ public:
 
 private:
     juce::ImageComponent mImageComponent;
-    ProcessBLockAudioProcessor& audioProcessor;
+    SmudgeAudioProcessor& audioProcessor;
+    
+    juce::ComboBox saturationChoice;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> satChoiceAttach;
     
     juce::Slider driveSlider;
     juce::Label driveLabel;

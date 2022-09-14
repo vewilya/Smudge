@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-ProcessBLockAudioProcessor::ProcessBLockAudioProcessor()
+SmudgeAudioProcessor::SmudgeAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -24,28 +24,34 @@ ProcessBLockAudioProcessor::ProcessBLockAudioProcessor()
 {
     treeState.addParameterListener("drive", this);
     treeState.addParameterListener("mix", this);
+    treeState.addParameterListener("saturationChoice", this);
 }
 
-ProcessBLockAudioProcessor::~ProcessBLockAudioProcessor()
+SmudgeAudioProcessor::~SmudgeAudioProcessor()
 {
     treeState.removeParameterListener("drive", this);
     treeState.removeParameterListener("mix", this);
+    treeState.removeParameterListener("saturationChoice", this);
 }
 
-juce::AudioProcessorValueTreeState::ParameterLayout ProcessBLockAudioProcessor::createParameterLayout()
+juce::AudioProcessorValueTreeState::ParameterLayout SmudgeAudioProcessor::createParameterLayout()
 {
+    juce::StringArray satChoices = { "Soft", "Hard" };
+    
     std::vector <std::unique_ptr<juce::RangedAudioParameter>> params;
-
+    
+    auto pChoice = std::make_unique<juce::AudioParameterChoice> (juce::ParameterID { "saturationChoice",  1 }, "SaturationChoice", juce::StringArray ("soft clip", "hard clip") , 0);
     auto pDrive = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { "drive",  1 }, "Drive",  0.0f, 1.0f, 0.2f );
     auto pMix   = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { "mix", 1 }, "Mix",  0.0f, 100.0f, 50.0f );
     
+    params.push_back(std::move(pChoice));
     params.push_back(std::move(pDrive));
     params.push_back(std::move(pMix));
 
     return { params.begin(), params.end() };
 }
 
-void ProcessBLockAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
+void SmudgeAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
 {
     if (parameterID == "drive")
     {
@@ -60,12 +66,12 @@ void ProcessBLockAudioProcessor::parameterChanged(const juce::String &parameterI
 }
 
 //==============================================================================
-const juce::String ProcessBLockAudioProcessor::getName() const
+const juce::String SmudgeAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool ProcessBLockAudioProcessor::acceptsMidi() const
+bool SmudgeAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -74,7 +80,7 @@ bool ProcessBLockAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool ProcessBLockAudioProcessor::producesMidi() const
+bool SmudgeAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -83,7 +89,7 @@ bool ProcessBLockAudioProcessor::producesMidi() const
    #endif
 }
 
-bool ProcessBLockAudioProcessor::isMidiEffect() const
+bool SmudgeAudioProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -92,51 +98,56 @@ bool ProcessBLockAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double ProcessBLockAudioProcessor::getTailLengthSeconds() const
+double SmudgeAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int ProcessBLockAudioProcessor::getNumPrograms()
+int SmudgeAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int ProcessBLockAudioProcessor::getCurrentProgram()
+int SmudgeAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void ProcessBLockAudioProcessor::setCurrentProgram (int index)
+void SmudgeAudioProcessor::setCurrentProgram (int index)
 {
 }
 
-const juce::String ProcessBLockAudioProcessor::getProgramName (int index)
+const juce::String SmudgeAudioProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void ProcessBLockAudioProcessor::changeProgramName (int index, const juce::String& newName)
+void SmudgeAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
 }
 
 //==============================================================================
-void ProcessBLockAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void SmudgeAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getTotalNumOutputChannels();
+    
 //    rawDrive = juce::Decibels::decibelsToGain(static_cast<float>(*treeState.getRawParameterValue("drive")));
     rawDrive = *treeState.getRawParameterValue("drive") * 5.0f + 2.0f;
     rawMix = *treeState.getRawParameterValue("mix") * 0.01f;
 }
 
-void ProcessBLockAudioProcessor::releaseResources()
+void SmudgeAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool ProcessBLockAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool SmudgeAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
@@ -161,7 +172,17 @@ bool ProcessBLockAudioProcessor::isBusesLayoutSupported (const BusesLayout& layo
 }
 #endif
 
-void ProcessBLockAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void SmudgeAudioProcessor::updateParameters()
+{
+    // update your Parameters for your procceses here
+}
+
+void SmudgeAudioProcessor::process(juce::dsp::ProcessContextReplacing<float> context)
+{
+    // do processing here and output
+}
+
+void SmudgeAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
@@ -172,6 +193,7 @@ void ProcessBLockAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         buffer.clear (i, 0, buffer.getNumSamples());
 
     juce::dsp::AudioBlock<float> block (buffer);
+    process(juce::dsp::ProcessContextReplacing<float> (block));
     
     for (int sample = 0; sample < block.getNumSamples(); sample++)
     {
@@ -182,15 +204,18 @@ void ProcessBLockAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
             const auto input = channelData[sample];
             
             // First stab at gain compensation
-            const auto unity = 1.0 - ( rawDrive / 14.0f);
-            const auto sat = piDivisor * std::atanf(rawDrive * input) * unity;
-
+//            const auto unity = 1.0 - ( rawDrive / 14.0f);
+//            const auto sat = piDivisor * std::atanf(rawDrive * input) * unity;
+            
+            const auto sat = softClipper(input);
             const auto mix = input * (1.0f - rawMix) + rawMix * sat;
-
+            
+            
             channelData[sample] = mix;
             
         }
     }
+    
     
 //    if (osToggle)
 //    {
@@ -203,27 +228,47 @@ void ProcessBLockAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 //    }
 }
 
+float SmudgeAudioProcessor::softClipper(float samples)
+{
+    const auto unity = 1.0 - ( rawDrive / 14.0f);
+    const auto sat = piDivisor * std::atanf(rawDrive * samples) * unity;
+    
+    return sat;
+}
+
+float SmudgeAudioProcessor::hardClipper(float samples)
+{
+    samples *= rawDrive;
+    
+    if (std::abs(samples) > 1.0)
+    {
+        samples *= 1.0 / std::abs(samples);
+    }
+    
+    return samples;
+}
+
 //==============================================================================
-bool ProcessBLockAudioProcessor::hasEditor() const
+bool SmudgeAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor* ProcessBLockAudioProcessor::createEditor()
+juce::AudioProcessorEditor* SmudgeAudioProcessor::createEditor()
 {
     return new ProcessBLockAudioProcessorEditor (*this);
 //    return new juce::GenericAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void ProcessBLockAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void SmudgeAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     //Save Param
     juce::MemoryOutputStream stream(destData, false);
     treeState.state.writeToStream (stream);
 }
 
-void ProcessBLockAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void SmudgeAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
    //Recall Param
     
@@ -239,5 +284,5 @@ void ProcessBLockAudioProcessor::setStateInformation (const void* data, int size
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new ProcessBLockAudioProcessor();
+    return new SmudgeAudioProcessor();
 }
