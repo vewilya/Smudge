@@ -11,6 +11,16 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 
+class MyLAF : public juce::LookAndFeel_V4
+{
+public:
+    MyLAF()
+    {
+        setColour(juce::Slider::thumbColourId, juce::Colours::orange);
+    }
+    
+};
+
 //==============================================================================
 /**
 */
@@ -28,6 +38,7 @@ private:
     juce::ImageComponent mImageComponent;
     
     SmudgeAudioProcessor& audioProcessor;
+    MyLAF myLookAndFeel;
     
     // IR
     juce::TextButton loadBtn;

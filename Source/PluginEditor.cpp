@@ -68,12 +68,14 @@ ProcessBLockAudioProcessorEditor::ProcessBLockAudioProcessorEditor (SmudgeAudioP
 //    saturationChoice.setColour(juce::ComboBox::ColourIds::focusedOutlineColourId, juce::Colours::transparentWhite);
 //    saturationChoice.setColour(juce::ComboBox::ColourIds::buttonColourId, juce::Colours::transparentWhite);
     
+    
     // Drive Slider
     addAndMakeVisible(driveSlider);
     driveSlider.setTextValueSuffix("");
     driveSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxRight, true, 64, 32);
     driveSlider.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colours::transparentWhite);
     driveSliderAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.treeState, "drive", driveSlider);
+    driveSlider.setLookAndFeel (&myLookAndFeel);
     
     addAndMakeVisible(driveLabel);
     driveLabel.setFont (juce::Font (16.0f, juce::Font::bold));
@@ -143,6 +145,8 @@ void ProcessBLockAudioProcessorEditor::resized()
     auto posX = getWidth() * .25;
     auto w = getWidth();
     auto h = getHeight();
+    auto yOffset = h * .7;
+    auto ySpacer = 35;
     
     // IR
     loadBtn.setBounds(w * .35, 70, w * .3, 30);
@@ -150,17 +154,17 @@ void ProcessBLockAudioProcessorEditor::resized()
    
     
     // Sliders
-    driveSlider.setBounds(posX + 70, h * .75, w * .4f, 35);
-    driveLabel.setBounds(posX, h * .75, 65, 35);
+    driveSlider.setBounds(posX + 70, yOffset, w * .4f, 35);
+    driveLabel.setBounds(posX, yOffset, 65, 35);
     
-    mixSlider.setBounds(posX + 70, h * .75 + 35, w * .4f, 35);
-    mixLabel.setBounds(posX, h * .75 + 35, 65, 35);
+    mixSlider.setBounds(posX + 70, yOffset + ySpacer * 1, w * .4f, 35);
+    mixLabel.setBounds(posX, yOffset + ySpacer * 1, 65, 35);
     
-    convoSlider.setBounds(posX + 70, h * .75 + 70, w * .4f, 35);
-    convoLabel.setBounds(posX, h * .75 + 70, 65, 35);
+    convoSlider.setBounds(posX + 70, yOffset + ySpacer * 2, w * .4f, 35);
+    convoLabel.setBounds(posX, yOffset + ySpacer * 2, 65, 35);
     
-    dryGainSlider.setBounds(posX + 70, h * .75 + 105, w * .4f, 35);
-    dryGainLabel.setBounds(posX, h * .75 + 105, 65, 35);
+    dryGainSlider.setBounds(posX + 70, yOffset + ySpacer * 3, w * .4f, 35);
+    dryGainLabel.setBounds(posX, yOffset + ySpacer * 3, 65, 35);
     
 //    saturationChoice.setBounds(w * .35, 30, w * .3, 30);
 }

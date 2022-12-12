@@ -5,6 +5,7 @@
               version="0.0.1" companyName="Bear Sound Productions">
   <MAINGROUP id="J1KNpu" name="Smudge">
     <GROUP id="{D181D592-84FE-8BCC-911C-E07FB9172444}" name="Source">
+      <GROUP id="{6D61AF2A-51FF-2F38-A9D8-FE8C92A94B22}" name="UI"/>
       <FILE id="vXWGdq" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="XgDC9Z" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
