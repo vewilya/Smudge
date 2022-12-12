@@ -13,6 +13,25 @@
       <FILE id="WWfgHy" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
     </GROUP>
+    <GROUP id="{94B46C19-A9EF-9EC1-9C12-BFEE247B9D61}" name="IRs">
+      <FILE id="ta39rI" name="frogs.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Atmosphere/frogs.wav"/>
+      <FILE id="wFoy1M" name="scabbers.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Atmosphere/scabbers.wav"/>
+      <FILE id="NJbJNH" name="scabbers2.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Atmosphere/scabbers2.wav"/>
+      <FILE id="UAmcSe" name="alter_ego.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Noise/alter_ego.wav"/>
+      <FILE id="wTUh0K" name="frenzy.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Noise/frenzy.wav"/>
+      <FILE id="wyCBNx" name="frozen_sticks.wav" compile="0" resource="1"
+            file="../../galdrabok_grimoire/src/assets/IRs/Noise/frozen_sticks.wav"/>
+      <FILE id="rOkuVh" name="time_freeze.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Noise/time_freeze.wav"/>
+      <FILE id="US4qG7" name="witches.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Noise/witches.wav"/>
+      <FILE id="sHMYLw" name="clang.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Textures/clang.wav"/>
+      <FILE id="pO8GhL" name="clap.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Textures/clap.wav"/>
+      <FILE id="mrLoUg" name="clonck.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Textures/clonck.wav"/>
+      <FILE id="cmA6AD" name="Crack1.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Textures/Crack1.wav"/>
+      <FILE id="SVtRh5" name="crack2.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Textures/crack2.wav"/>
+      <FILE id="jPn8sU" name="Zish.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Textures/Zish.wav"/>
+      <FILE id="aTz2Rv" name="zissl.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Textures/zissl.wav"/>
+      <FILE id="NRXr0B" name="Zosh.wav" compile="0" resource="1" file="../../galdrabok_grimoire/src/assets/IRs/Textures/Zosh.wav"/>
+    </GROUP>
     <GROUP id="{C28D71F5-0938-B371-614B-A73782A20887}" name="Ressources">
       <FILE id="WLds1l" name="Smudge.png" compile="0" resource="1" file="Ressources/Smudge.png"/>
     </GROUP>

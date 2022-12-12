@@ -55,15 +55,26 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    
     // Value Tree =======================================================================
-
     juce::AudioProcessorValueTreeState treeState;
+    
+    juce::dsp::Convolution irLoader;
+    juce::File root, savedFile;
+    
     
     void process(juce::dsp::ProcessContextReplacing<float> context);
     void updateParameters();
+    
 private:
+    juce::dsp::ProcessSpec spec;
+    juce::AudioBuffer<float> dryBuffer;
+    
     float rawDrive = 1.0f;
     float rawMix = 0.5f;
+    float rawConvo = 0.1f;
+    float rawDryGain { 0.1f };
+    
     bool phase = false;
     
     static constexpr float piDivisor = 2.0f / juce::MathConstants<float>::pi;
@@ -73,9 +84,15 @@ private:
     void parameterChanged (const juce::String& parameterID, float newValue) override;
     //    juce::dsp::Oversampling<float> oversamplingModule;
     
-    bool osToggle {false};
+//    bool osToggle {false};
     float softClipper(float samples);
     float hardClipper(float samples);
+    
+    void convolve(juce::dsp::ProcessContextReplacing<float> context);
+    
+    
+    juce::dsp::Gain<float> convoGain;
+    juce::dsp::Gain<float> dryGain;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SmudgeAudioProcessor)
 };
